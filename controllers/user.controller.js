@@ -2,6 +2,7 @@ const db = require("../config/db.config");
 const bcrypt = require("bcrypt");
 const {totp} = require("otplib")
 const nodemailer = require("nodemailer")
+const jwt = require("jsonwebtoken")
 totp.options = {step: 120, digits: 5}
 
 const secretKey = "choco"
@@ -99,9 +100,11 @@ const userLogin = (req,res)=>{
                 message: "parol hato"
             })
         }
+        const token = jwt.sign({password, email}, secretKey, )
         console.log(result);
         res.status(200).json({
-            message: "Succsessl"
+            message: "Succsessl",
+            token: token
         })
     })
 }

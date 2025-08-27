@@ -1,39 +1,27 @@
 const db = require("../config/db.config");
 
 const createOrders = (req, res) => {
-  const { client_id, shop_tool_id, order_date, period } = req.body;
+const { client_id, shop_tool_id, order_date, period } = req.body;
+
   db.query(
-    `SELECT * FROM shop_tool WHERE id = ?`,
-    [shop_tool_id],
-    (error, result) => {
+    `insert into orders (client_id, shop_tool_id, order_date, period) values (?,?,?,?)`,
+    [client_id, shop_tool_id, order_date, period],
+    (error, results) => {
       if (error) {
         console.log(error);
-        return res.json({
-          message: error.message,
+        return res.status(500).json({
+          message: "Error adding new ",
+          error: "Internal Server Erroe",
         });
       }
-      let price = Number(result[0].rent_price);
-
-      db.query(
-        `insert into orders (client_id, shop_tool_id, order_date, period, total_price) values (?,?,?,?,?)`,
-        [client_id, shop_tool_id, order_date, period, price],
-        (error, results) => {
-          if (error) {
-            console.log(error);
-            return res.status(500).json({
-              message: "Error adding new ",
-              error: "Internal Server Erroe",
-            });
-          }
-          res.status(201).json({
-            message: "New Type add",
-            id: results.insertId,
-          });
-        }
-      );
+      res.status(201).json({
+        message: "New Type add",
+        id: results.insertId,
+    });
     }
   );
-};
+}
+
 
 const getOrders = (req, res) => {
   const dbQuery = `select * from orders`;

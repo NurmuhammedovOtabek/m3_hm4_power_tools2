@@ -68,3 +68,15 @@ CREATE TABLE admin(
     is_creator BOOLEAN DEFAULT false
 );
 
+
+CREATE Trigger count_total_price
+BEFORE INSERT ON orders
+FOR EACH ROW
+BEGIN 
+    DECLARE t_price DECIMAL(8,2);
+
+    SELECT rent_price INTO t_price FROM shop_tool
+    WHERE id=NEW.shop_tool_id;
+
+    set NEW.total_price = NEW.period * t_price ;
+END
